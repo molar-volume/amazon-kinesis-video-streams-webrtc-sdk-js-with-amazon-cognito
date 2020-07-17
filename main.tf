@@ -10,33 +10,19 @@ provider "aws" {
   region  = "us-east-1"
 }
 
-# Build the VPC
-resource "aws_vpc" "vpc" {
-  cidr_block           = "10.1.0.0/16"
-  instance_tenancy     = "default"
-
-  tags = {
-    Name      = "Vpc"
-    Terraform = "true"
-  }
+resource "aws_db_instance" "mariaDB" {
+  allocated_storage    = 1
+  storage_type         = "gp2"
+  engine               = "mysql"
+  engine_version       = "5.7"
+  instance_class       = "db.t2.micro"
+  name                 = "mydb"
+  username             = "foo"
+  password             = "foobarbaz"
+  parameter_group_name = "default.mysql5.7"
 }
 
-# Build route table 1
-resource "aws_route_table" "route_table1" {
-  vpc_id = aws_vpc.vpc.id
-
-  tags = {
-    Name = "RouteTable1"
-    Terraform = "true"
-  }
+resource "aws_kinesis_video_stream" "kvs" {
+  name = "kvs"
 }
 
-# Build route table 2
-resource "aws_route_table" "route_table2" {
-  vpc_id = aws_vpc.vpc.id
-
-  tags = {
-    Name = "RouteTable2"
-    Terraform = "true"
-  }
-}
